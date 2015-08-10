@@ -380,6 +380,11 @@ resources.
 
 \item Changes in a memory location effected by one processor are visible to all 
 other processors. 
+
+\item Data sharing between tasks is both fast and uniform due to the proximity of 
+memory to CPUs 
+
+\item Primary disadvantage is the lack of scalability between memory and CPUs
 \end{itemize}
 
 \begin{columns}
@@ -395,11 +400,11 @@ other processors.
 \end{figure}
 \end{columns}
 \begin{columns}
-\column{0.49\linewidth}
+\column{0.6\linewidth}
 If we want thread 0 to use the value placed in the array by thread 1, we needs to 
 use a mechanism which assures that thread 1 has written the value before thread 0 
 reads it.
-\column{0.49\linewidth}
+\column{0.35\linewidth}
 \begin{figure}
 \includegraphics[width=\linewidth]{figs/shared_memory_vector.png}
 \end{figure}
@@ -419,9 +424,9 @@ reads it.
 \item Simple to use
 \end{itemize}
 
-\item \textbf{P-threads}
+\item \textbf{POSIX threads or p-threads}
 \begin{itemize}
-\item A set of C programming language types, functions and constants. 
+\item Library based set of C language types, functions and constants. 
 \item A thread can be created with much less operating system overhead.
 \item No advanced threading algorithm. Use C++11 with same set of features.
 \end{itemize}
@@ -643,4 +648,64 @@ default(shared) private(i) \
 Synchronisation! Don't forget to synchronise the threads
 \end{frame}
 
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\section{Distributed memory}
+\begin{frame}{Distributed memory}
+\begin{itemize}
+\item \textbf{General Characteristics:}
+\begin{itemize}
+\item Distributed memory systems require a communication network to 
+connect inter-processor memory. Usually via Ethernet.
+
+\item Processors have their own local memory. Memory addresses in one processor do 
+not map to another processor, so there is no concept of global address space across 
+all processors.
+
+\item Because each processor has its own local memory, it operates independently. 
+Changes it makes to its local memory have no effect on the memory of other     
+processors. Hence, the concept of cache coherency does not apply.
+
+\item When a processor needs access to data in another processor, it is usually the 
+task of the programmer to explicitly define how and when data is communicated.
+
+\end{itemize}
+
+\end{itemize}
+\begin{figure}
+\includegraphics[width=0.5\linewidth]{figs/distributed_memory}
+\end{figure}
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{Distributed memory: Advantages and disadvantages}
+\begin{itemize}
+
+\item \textbf{Advantages:}
+\begin{itemize}
+\item Memory is scalable with the number of processors. 
+\item Increase the number of processors and the size of memory increases 
+proportionately.
+\item Each processor can rapidly access its own memory without interference and 
+    without the overhead incurred with trying to maintain global cache coherency.
+\item Cost effectiveness: can use commodity, off-the-shelf processors and 
+networking. 
+\end{itemize}
+\item \textbf{Disadvantages:}
+\begin{itemize}
+\item The programmer is responsible for many of the details associated with data 
+    communication between processors.
+\item It may be difficult to map existing data structures, based on global memory, 
+to this memory organization.
+\item Non-uniform memory access times - data residing on a remote node takes longer 
+to access than node local data. 
+
+\end{itemize}
+\end{itemize}
+\end{frame}
 \end{document}
