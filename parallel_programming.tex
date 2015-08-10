@@ -362,13 +362,102 @@ more resources causes performance to decrease.
 \item Communications network bandwidth
 \item Amount of memory available on any given machine or set of machines
 \item Processor clock speed 
-
 \end{itemize}
 
 \item Parallel support libraries and subsystems software can limit scalability 
 independent of your application. 
 \end{itemize}
+\end{frame}
 
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\section{Shared memory}
+\begin{frame}{Shared memory}
+\begin{itemize}
+\item Multiple processors can operate independently but share the same memory 
+resources.
+
+\item Changes in a memory location effected by one processor are visible to all 
+other processors. 
+\end{itemize}
+
+\begin{columns}
+\column{0.49\linewidth}
+\begin{figure}
+\includegraphics[width=0.7\linewidth]{figs/shared_memory.png}
+\caption*{Shared memory}
+\end{figure}
+\column{0.49\linewidth}
+\begin{figure}
+\includegraphics[width=0.7\linewidth]{figs/numa.png}
+\caption*{Non Uniform Memory access}
+\end{figure}
+\end{columns}
+\begin{columns}
+\column{0.49\linewidth}
+If we want thread 0 to use the value placed in the array by thread 1, we needs to 
+use a mechanism which assures that thread 1 has written the value before thread 0 
+reads it.
+\column{0.49\linewidth}
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/shared_memory_vector.png}
+\end{figure}
+\end{columns}
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{Shared memory frameworks}
+\begin{itemize}
+\item \textbf{OpenMP}
+\begin{itemize}
+\item API that supports multi-platform shared memory multiprocessing programming
+\item Model: master thread forks 
+\item Simple to use
+\end{itemize}
+
+\item \textbf{P-threads}
+\begin{itemize}
+\item A set of C programming language types, functions and constants. 
+\item A thread can be created with much less operating system overhead.
+\item No advanced threading algorithm. Use C++11 with same set of features.
+\end{itemize}
+
+\item \textbf{C++11 threads}
+\begin{itemize}
+\item C++11 language provides a memory model that supports threading.
+\item This library provides everything from thread management to mutexes and 
+synchronization. 
+\end{itemize}
+
+\item \textbf{Intel Cilk}
+\begin{itemize}
+\item Language extension.
+\item Simple to parallelise.
+\item No advanced algorithm support.
+\end{itemize}
+
+\item \textbf{Intel Threaded Building Blocks}
+\begin{itemize}
+\item C++ template library for parallelisation.
+\item Support for parallel algorithms, data structures and is scalable.
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{Shared memory: Choosing the right framework}
+
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/shared_memory_comparison.png}
+\end{figure}
 \end{frame}
 
 \end{document}
