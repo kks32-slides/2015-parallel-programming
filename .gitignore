@@ -1,6 +1,7 @@
 *.snm*
 *.pyg*
 *.nav*
+*.vrb*
 *.fuse*
 *fdb_latexmk*
 .DS_Store*
