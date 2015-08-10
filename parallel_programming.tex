@@ -460,4 +460,187 @@ synchronization.
 \end{figure}
 \end{frame}
 
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{OpenMP}
+\begin{itemize}
+\item Open Multi-Processing is an API to explicitly direct multi-
+threaded, shared memory parallelism
+\item Comprised of three primary API components:
+\begin{itemize}
+\item Compiler Directives – Pragmas (pre-processor macros)
+\item Runtime Library Routines
+\item Environment Variables
+\end{itemize}
+\item The programmer is responsible for synchronizing input and
+output.
+\item OpenMP uses threads. A thread of execution is the smallest unit of processing 
+that can be scheduled by an operating system.
+\item Threads exist within the resources of a single process. Without
+the process, they cease to exist.
+\item Typically, the number of threads match the number of machine
+processors/cores. However, the actual use of threads is up to the
+application.
+\end{itemize}
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{Fork – Join Model}
+
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/fork_join}
+\caption*{Fork - Join model}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{FORK}: the master thread then creates a team of parallel threads.
+The statements in the program that are enclosed by the parallel region
+construct are then executed in parallel among the various team
+threads.
+\item \textbf{JOIN}: When the team threads complete the statements in the parallel
+region construct, they synchronize and terminate, leaving only the
+master thread.
+\item The number of parallel regions and the threads that comprise them are
+arbitrary.
+\end{itemize}
+\end{frame}
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}[fragile]{OpenMP: Code structure}
+
+\begin{minted}[mathescape, linenos,
+               numbersep=5pt,
+               gobble=0,
+               frame=lines,
+               framesep=2mm]{c++}
+#include <omp.h>
+int main () {
+  int var1, var2, var3;
+  // Serial code . . .
+  // Beginning of parallel section. Fork a team of threads.
+  //Specify variable scoping
+#pragma omp parallel for private(var1, var2) shared(var3) {
+    // Parallel section executed by all threads
+    // Run-time Library calls
+    // All threads join master thread and disband
+  }
+  // Resume serial code ..
+}
+\end{minted}
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}[fragile]{OpenMP: Dot product}
+Dot product $sum += a[N] * b[N]$
+\begin{columns}
+\column{0.45\linewidth}
+\begin{minted}[mathescape, linenos,
+               numbersep=5pt,
+               gobble=0,
+               frame=lines,
+               framesep=2mm]{c++}
+// serial code
+const int size = 100;
+int main() {
+  int i;
+  float a[size], b[size];
+  float sum = 0.0;
+  // Some initializations
+  for (i = 0; i < size; i++) 
+    a[i] = b[i] = 1.0;
+  // computation loop
+  for (i = 0; i < size; i++) 
+    sum += (a[i] * b[i]);
+
+  printf("Sum = %f\n", sum);
+}
+\end{minted}
+\column{0.45\linewidth}
+\begin{minted}[mathescape, linenos,
+               numbersep=5pt,
+               gobble=0,
+               frame=lines,
+               framesep=2mm]{c++}
+// parallel code
+const int size = 100;
+int main() {
+  int i;  float sum = 0.0;
+  float a[size], b[size];
+
+  for (i = 0; i < size; i++) 
+    a[i] = b[i] = 1.0;
+
+#pragma omp parallel for \
+default(shared) private(i) 
+  for (i = 0; i < size; i++) 
+    sum += (a[i] * b[i]);
+
+  printf("Sum = %f\n", sum);
+}  
+\end{minted}
+\end{columns}
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}[fragile]{Parallel dot product: What went wrong?}
+\begin{columns}
+\column{0.47\linewidth}
+\begin{minted}[mathescape, linenos,
+               numbersep=5pt,
+               gobble=0,
+               frame=lines,
+               framesep=2mm]{c++}
+// wrong code
+const int size = 100;
+int main() {
+  int i;  float sum = 0.0;
+  float a[size], b[size];
+  for (i = 0; i < size; i++) 
+    a[i] = b[i] = 1.0;
+
+#pragma omp parallel for \
+default(shared) private(i) 
+  for (i = 0; i < size; i++) 
+    sum += (a[i] * b[i]);
+
+  printf("Sum = %f\n", sum);
+}  
+\end{minted}
+\column{0.49\linewidth}
+\begin{minted}[mathescape, linenos,
+               numbersep=5pt,
+               gobble=0,
+               frame=lines,
+               framesep=2mm]{c++}
+// parallel code
+const int size = 100;
+int main() {
+  int i;  float sum = 0.0;
+  float a[size], b[size];
+  for (i = 0; i < size; i++) 
+    a[i] = b[i] = 1.0;
+
+#pragma omp parallel for \
+default(shared) private(i) \
+    reduction(+ : sum)
+  for (i = 0; i < size; i++) 
+    sum += (a[i] * b[i]);
+
+  printf("Sum = %f\n", sum);
+}  
+\end{minted}
+\end{columns}
+
+Synchronisation! Don't forget to synchronise the threads
+\end{frame}
+
 \end{document}
