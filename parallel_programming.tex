@@ -148,7 +148,7 @@ chain to L3
 
 %*******************************************************************************
 %******************************* Frame 
-%*****************************************
+%%%*****************************************
 %*******************************************************************************
 \begin{frame}{Does your compiler execute the program you wrote?}
 
@@ -177,10 +177,9 @@ by its program.'' - Lesslie Lamport
 \end{frame}
 
 
-%*******************************************************************************
-%******************************* Frame 
-%*****************************************
-%*******************************************************************************
+%**************************************************************************
+%******************************* Frame*************************************
+%**************************************************************************
 \begin{frame}[fragile]{Does your compiler execute the program you wrote?}
 \begin{columns}
 \column{0.5\textwidth}
@@ -216,6 +215,50 @@ for (j = 0; j < cols; ++j) {
 The CPU will expect a sequential operation. Iterating through each row of 
 data is faster than going through each column. Almost always, a 2D matrix 
 is stored as a 1D linear array.
+\end{frame}
+
+
+%**************************************************************************
+%******************************* Frame*************************************
+%**************************************************************************
+\begin{frame}{Stack v Heap}
+\begin{columns}
+\column{0.65\textwidth}
+\begin{itemize}
+\item \textit{Stack:} Stores local data, return
+addresses, used for parameter
+passing. e.g., int i; 
+\item typically stored in the ``low'' addresses of memory and 
+fills upward toward its upper limit. 
+
+\item faster, but smaller in size
+
+\item \textit{Heap:} You would use the heap if you don't know exactly how much
+data you will need at runtime or if you need to allocate a lot of data.
+
+$ClassObj* obj = new ClassObj\{0\};  ... delete\mathrm{ obj};$
+
+$auto obj = std::make\_shared < ClassObj>(0);$
+
+\item Stored at the ``top'' of the address space and grows 
+towards the stack. 
+
+\item Slower but larger in size
+
+\item Use local variables (stack)
+when you can. Use dynamic
+allocation (heap) when you
+have to.
+
+\end{itemize}
+
+\column{0.35\textwidth}
+\begin{figure}
+\includegraphics[width=.8\linewidth]{figs/stack_heap}
+\caption*{Stack v Heap}
+\end{figure}
+
+\end{columns}
 \end{frame}
 
 
