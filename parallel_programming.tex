@@ -49,8 +49,7 @@ programmed task.
 
 
 %*******************************************************************************
-%******************************* Frame 
-%*****************************************
+%******************************* Frame *****************************************
 %*******************************************************************************
 
 \begin{frame}{Serial computing}
@@ -147,8 +146,7 @@ chain to L3
 
 
 %*******************************************************************************
-%******************************* Frame 
-%%%*****************************************
+%******************************* Frame *****************************************
 %*******************************************************************************
 \begin{frame}{Does your compiler execute the program you wrote?}
 
@@ -231,7 +229,7 @@ passing. e.g., int i;
 \item typically stored in the ``low'' addresses of memory and 
 fills upward toward its upper limit. 
 
-\item faster, but smaller in size
+\item faster, but smaller in size. Last In Fist Out.
 
 \item \textit{Heap:} You would use the heap if you don't know exactly how much
 data you will need at runtime or if you need to allocate a lot of data.
@@ -245,10 +243,8 @@ towards the stack.
 
 \item Slower but larger in size
 
-\item Use local variables (stack)
-when you can. Use dynamic
-allocation (heap) when you
-have to.
+\item Use local variables (stack) when you can. Use dynamic
+allocation (heap) when you have to.
 
 \end{itemize}
 
@@ -261,5 +257,118 @@ have to.
 \end{columns}
 \end{frame}
 
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\section{Parallel computing}
+
+\begin{frame}{What is parallel computing?}
+%\begin{columns}
+%\column{.6\linewidth}
+In the simplest sense, parallel computing is the simultaneous use of multiple 
+compute resources to solve a computational problem:
+\begin{itemize}
+\item A problem is broken into discrete parts that can be solved concurrently
+\item Each part is further broken down to a series of instructions
+\item Instructions from each part execute simultaneously on different processors
+\item An overall control/coordination mechanism is employed 
+\end{itemize}
+%\column{.495\linewidth}
+\begin{figure}
+\includegraphics[width=0.7\linewidth]{figs/parallel_problem.png}
+\caption*{}
+\end{figure}
+%\end{columns}
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{Concurrency v Parallelism}
+\begin{columns}
+\column{0.49\linewidth}
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/concurrency.png}
+\caption*{Concurrency}
+\end{figure}
+\column{0.49\linewidth}
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/parallelism.png}
+\caption*{parallelism}
+\end{figure}
+\end{columns}
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{Flynn's Classical Taxonomy}
+
+\begin{figure}
+\includegraphics[width=0.7\linewidth]{figs/flynn}
+\caption*{Computer architecture}
+\end{figure}
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{Cost of parallelisation}
+\begin{columns}
+
+\column{0.49\linewidth}
+$speedup = \frac{1}{1 - \mathrm{parallel part}}$
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/amdahl1}
+\caption*{Single processor}
+\end{figure}
+\column{0.49\linewidth}
+$speedup = \frac{1}{\frac{\mathrm{parallel part}}{\mathrm{\# processors}} + 
+\mathrm{serial part}}$
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/amdahl2}
+\caption*{Multiple processor}
+\end{figure}
+\end{columns}
+
+Problems that increase the percentage of parallel time with their size are more 
+\textbf{\textit{scalable}} than problems with a fixed percentage of parallel time
+
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{Scalability}
+\begin{itemize}
+\item \textit{Strong scaling:} The total problem size stays fixed as more processors 
+are added. 
+\item \textit{Weak scaling:} The problem size per processor stays fixed as more 
+processors are added. 
+
+\item Simply adding more processors is rarely the answer to scalability.
+
+\item The algorithm may have inherent limits to scalability. At some point, adding 
+more resources causes performance to decrease. 
+
+\item Hardware factors play a significant role in scalability. Examples:
+
+\begin{itemize}
+\item Memory-cpu bus bandwidth on Symmetric Multi-Processor (SMP) -
+    where multiple processors share a single 
+    address space and have equal access to all resources. 
+\item Communications network bandwidth
+\item Amount of memory available on any given machine or set of machines
+\item Processor clock speed 
+
+\end{itemize}
+
+\item Parallel support libraries and subsystems software can limit scalability 
+independent of your application. 
+\end{itemize}
+
+\end{frame}
 
 \end{document}
