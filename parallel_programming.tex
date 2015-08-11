@@ -1194,4 +1194,134 @@ copy(a[0 : N], b[0 : N])
 We need to copy data in and out of the GPU
 \end{frame}
 
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}[fragile]{OpenACC Kernels}
+
+\begin{itemize}
+\item The kernels construct expresses that a region may contain parallelism
+and the compiler determines what can safely be parallelized.
+\item The compiler identifies 3 parallel loops and generates 3 kernels.
+\end{itemize}
+\centering
+\begin{minted}[mathescape, linenos,
+               numbersep=5pt,
+               gobble=0,
+               frame=lines,
+               framesep=2mm]{c++}
+#pragma acc kernels
+{
+  for(int i=0; i<N; i++)
+    b[i] = b[i] * b[i]; //kernel 1
+  for(int i=0; i<N; i++)
+    a(i) = b(i) + a(i); //kernel 2
+  for(int i=0; i<N; i++)
+    b(i) = b(i) / a(i); //kernel 3
+}
+\end{minted}
+
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{OpenACC parallel loop vs. kernels}
+\begin{columns}
+\column{0.49\linewidth}
+\textbf{OpenACC Parallel Loop}
+\begin{itemize}
+\item Requires analysis by programmer to ensure safe parallelism
+\item Straightforward path from OpenMP
+\end{itemize}
+\column{0.49\linewidth}
+\textbf{OpenACC Kernel}
+\begin{itemize}
+\item Compiler performs parallel analysis and parallelises what it
+believes safe
+\item Can cover larger area of code with single directive
+\item Gives compiler additional leeway.
+\end{itemize}
+\end{columns}
+\vskip3em
+\textbf{\textit{Both approaches are equally valid and can perform equally well}}
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{What is CUDA?}
+
+\begin{itemize}
+\item CUDA (Compute Unified Device Architecture) is NVIDIA’s program
+development environment:
+\begin{itemize}
+\item Expose general-purpose GPU computing as first-class capability
+\item FORTRAN support provided by compiler from PGI
+\item lots of example code and good documentation 
+\item 2 -- 4 week initial learning curve
+\item large user community on NVIDIA forums 
+\end{itemize}
+\item CUDA C/C++
+\begin{itemize}
+\item Based on industry-standard C/C++
+\item A handful of language extensions to allow heterogeneous programs
+\item Straightforward APIs to manage devices, memory, etc.
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{CUDA Terminology}
+\begin{columns}
+\column{0.49\linewidth}
+\begin{itemize}
+\item \textit{Threads} - Minimum ``unit'' of granularity that programmer can control
+\item threadIdx.{x, y, z} : thread index within the block
+\item \textit{Blocks} - A group of thread executed simultaneously by a single SMX
+\item blockIdx.{x, y, z} : block index within the grid
+\item blockDim.{x, y, z} : dimensions of the block in threads
+\item \textit{Grid} - A group of blocks executed by the GPU using one or more SMX 
+based on the mapping and occupancy
+\item gridDim.{x, y, z} :  grid dimensions in blocks
+
+\end{itemize}
+\column{0.49\linewidth}
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/CUDA_mapping}
+\caption*{Mapping data to achieve parallelism}
+\end{figure}
+\end{columns}
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{GPU Memory layout}
+\begin{columns}
+\column{0.49\linewidth}
+\begin{itemize}
+\item \textit{Global memory} held in the large device memory allocated by host code
+\item pointers held by host code and passed into kernels continue to exist until
+freed by host code
+\item since blocks execute in an arbitrary order, if one block modifies an array
+element, no other block should read or write that same element pointers held by host 
+code and passed into kernels continue to exist until freed by host code
+\item 64K 32-bit registers per SMX
+\item Registry resource limited
+\end{itemize}
+\column{0.49\linewidth}
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/GPU_Memory_layout.png}
+%\caption*{Mapping data to achieve parallelism}
+\end{figure}
+
+\end{columns}
+
+\end{frame}
+
 \end{document}
