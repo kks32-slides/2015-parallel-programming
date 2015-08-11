@@ -997,6 +997,59 @@ are ``free'' but there is a price: complexity in programmability!
 %*******************************************************************************
 %******************************* Frame *****************************************
 %*******************************************************************************
+\begin{frame}{CPU v GPU}
+\href{https://www.youtube.com/watch?v=-P28LKWTzrI}{Mythbusters CPU v GPU demo}
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{LBM DEM simulation of collapse of a granular column}
+\href{https://vimeo.com/108587065}{https://vimeo.com/108587065}
+
+\begin{table}[tbhp]
+	\caption{GPU vs. CPU parallelisation.}
+	\label{table:GPU}
+	\centering
+	\begin{tabular}{l l l}
+		\toprule
+		Execution & Computational Time (s) &  Speedup \\
+		\midrule
+		CPU 1 OpenMP thread		& 2016	 & -- \\
+		CPU 2 OpenMP threads	& 1035	 & 1.5 x \\
+		CPU 4 OpenMP threads	& 660 	 & 3.0 x \\
+		CPU 12 OpenMP threads	& 150	 & 13.5 x\\
+		GPU GE Force GTX 580	& 16	 & 126.0 x \\
+		GPU Tesla K80			& 2.25	 & 900.0 x \\
+		\bottomrule
+		\multicolumn{3}{l}{\footnotesize{\textsuperscript{\#}}~Wall time 
+		for 100 iteration for 7.2 Million LBM nodes and 2500 DEM grains.} \\
+		\multicolumn{3}{l}{\footnotesize{\textsuperscript{*}~CPU OpenMP threads 
+		- 6 core Intel Xeon $\mathrm{@}$ 3.3GHz}} \\
+		\multicolumn{3}{l}{\footnotesize{\textsuperscript{\dag}~GPU threads - 
+		GeForce GTX 580 - 512 CUDA cores}} \\
+		\multicolumn{3}{l}{\footnotesize{\textsuperscript{\dag*}~GPU threads - 
+		GeForce Tesla K80 - 4992 CUDA cores}}
+	\end{tabular}
+\end{table}
+\end{frame}
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}{LBM DEM GPU scalability}
+
+\begin{figure}
+\includegraphics[width=.8\linewidth]{figs/GPU_Speedup}
+%\caption*{GPU}
+\end{figure}
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
 \begin{frame}{NVIDIA K20 GPU architecture}
 \begin{columns}
 \column{0.49\linewidth}
@@ -1083,10 +1136,62 @@ GPU Programming languages
 \begin{frame}{GPU libraries}
 
 \begin{figure}
-\includegraphics[width=.7\linewidth]{figs/GPU_libraries}
+\includegraphics[width=\linewidth]{figs/GPU_libraries}
 %\caption*{GPU concept}
 \end{figure}
 
+\end{frame}
+
+
+%*******************************************************************************
+%******************************* Frame *****************************************
+%*******************************************************************************
+\begin{frame}[fragile]{OpenACC v OpenMP implementations}
+\begin{columns}
+\column{0.47\linewidth}
+\begin{minted}[mathescape, linenos,
+               numbersep=5pt,
+               gobble=0,
+               frame=lines,
+               framesep=2mm]{c++}
+// OpenMP parallel code
+#pragma omp parallel
+for (int iter = 0; iter < ITERS; 
+         ++iter) {
+#pragma omp for         
+  for (int i = 0; i < N; ++i)
+    b[i] = b[i] * b[i];
+  for (int i = 0; i < N; ++i)
+    a[i] = b[i] + a[i];
+  for (int i = 0; i < N; ++i)
+    b[i] = b[i] / a[i];
+}
+
+\end{minted}
+\column{0.47\linewidth}
+\begin{minted}[mathescape, linenos,
+               numbersep=5pt,
+               gobble=0,
+               frame=lines,
+               framesep=2mm]{c++}
+// GPU parallel code
+#pragma acc data \
+copy(a[0 : N], b[0 : N])
+{
+  for (int iter = 0; iter < ITERS;
+           ++iter) {
+#pragma acc parallel loop
+    for (int i = 0; i < N; i++) {
+      b[i] = b[i] * b[i];
+      a[i] = b[i] + a[i];
+      b[i] = b[i] / a[i];
+    }
+  }
+}
+\end{minted}
+\end{columns}
+
+We need to copy data in and out of the GPU
 \end{frame}
 
 \end{document}
